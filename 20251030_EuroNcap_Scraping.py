@@ -83,28 +83,32 @@ def getCarInfo(html, nameList):
     soup = BeautifulSoup(html, "html.parser")
     # Extract links and Mod time
     item = {}
-    
-    # Get releasedate
-    #item["releasedate"] = soup.select_one("#releasedate").get_text(strip = True)
-    item["releasedate"] = safe_select_attr(soup, 'div#releasedate')
-
-    # Get stars
 # =============================================================================
-#     img_tag = soup.find('div', class_='stars').find('img')
-#     # Get the value of 'data-src'
-#     item["stars"] = img_tag['data-src']
+#     
+#     # Get releasedate
+#     #item["releasedate"] = soup.select_one("#releasedate").get_text(strip = True)
+#     item["releasedate"] = safe_select_attr(soup, 'div#releasedate')
+# 
+#     # Get stars
+# # =============================================================================
+# #     img_tag = soup.find('div', class_='stars').find('img')
+# #     # Get the value of 'data-src'
+# #     item["stars"] = img_tag['data-src']
+# # =============================================================================
+#     item["stars"] = safe_select_attr(soup, 'div.stars img', 'data-src')
+#     
+#     # Get car-name
+#     #item["car-name"] = soup.select_one("h1", class_='car-name').get_text(strip = True)   
+#     item["car-name"] = safe_select_attr(soup, 'h1.car-name')   
+# 
+#     # Get car-class
+#     #item["car-class"] = soup.find('a', class_='car-class').get_text(strip = True)   
+#     item["car-class"] = safe_select_attr(soup, 'a.car-class')
+#     
 # =============================================================================
-    item["stars"] = safe_select_attr(soup, 'div.stars img', 'data-src')
-    
-    # Get car-name
-    #item["car-name"] = soup.select_one("h1", class_='car-name').get_text(strip = True)   
-    item["car-name"] = safe_select_attr(soup, 'h1.car-name')   
+    for name in nameList:
+        item[name["name"]] = safe_select_attr(soup, name["selector"], name["attribute"])
 
-    # Get car-class
-    #item["car-class"] = soup.find('a', class_='car-class').get_text(strip = True)   
-    item["car-class"] = safe_select_attr(soup, 'a.car-class')
-    
-    
     return item
 
 
@@ -141,5 +145,11 @@ if __name__ == "__main__":
     html = fetch(urlLink)
     #print(html)
     # List of information to scrape
-    nameList = ["releasedate", "stars", "car-name"]
-#    carInfo = getCarInfo(html, nameList)
+    toScrapeList = [{"name":"releasedate", "selector":"#releasedate", "attribute":None},
+                {"name":"stars", "selector":"div.stars img", "attribute":'data-src'},
+                {"name":"car-name", "selector":"h1.car-name", "attribute":None},
+                {"name":"car-class", "selector":"a.car-class", "attribute":None},
+                {"name":"linkPDFreport", "selector":"div.download-report a", "attribute":"href"},
+                ]
+    
+#    carInfo = getCarInfo(html, toScrapeList)
